@@ -1,0 +1,300 @@
+//Clase Adega
+
+package At_II_POO;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Adega {
+	private Vinho Colmeia[][];
+
+	public Adega() {
+		this.Colmeia = new Vinho[20][10];
+	}
+
+	int cont = 0;
+
+	public void AdcionarGarrafa(int linha, int coluna, Vinho Garrafa) {
+		if (Colmeia[linha][coluna] == null) {
+			Colmeia[linha][coluna] = Garrafa;
+		}
+	}
+
+	int totalBranco = 0;
+	int totalTinto = 0;
+
+	public void ContagemPorTipo() {
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (Colmeia[i][j] instanceof VinhoBranco) {
+					totalBranco += 1;
+				}
+				if (Colmeia[i][j] instanceof VinhoTinto) {
+					totalTinto += 1;
+				}
+
+			}
+		}
+		System.out.println("Vinhos Brancos: " + totalBranco);
+		System.out.println("Vinhos Tintos: " + totalTinto);
+	}
+
+	public void ContagemGeral() {
+		int TotalVinhos = 0;
+		for (int i = 0; i < Colmeia.length; i++) {
+			for (int j = 0; j < Colmeia[i].length; j++) {
+				if (Colmeia[i][j] != null) {
+					TotalVinhos += 1;
+				}
+			}
+		}
+		System.out.println("Total de Vinhos na Adega: " + TotalVinhos);
+	}
+
+	public void ValorCompraTotal() {
+		double ValorTotalCompra = 0;
+		for (int i = 0; i < Colmeia.length; i++) {
+			for (int j = 0; j < Colmeia[i].length; j++) {
+				if (Colmeia[i][j] != null) {
+					ValorTotalCompra += Colmeia[i][j].getValorDeCompra();
+				}
+			}
+		}
+		System.out.printf("Valor Total de Compra: %.2f", (ValorTotalCompra));
+		System.out.println();
+	}
+
+	public void ValorVendaTotal() {
+		double ValorTotalVenda = 0;
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 10; j++) {
+				if ((Colmeia[i][j] != null)) {
+					ValorTotalVenda += Colmeia[i][j].CalcularValorVenda();
+				}
+			}
+		}
+		System.out.printf("Valor Total de Venda: %.2f", (ValorTotalVenda));
+		System.out.println();
+	}
+
+	public void VinhoMaisAntigo() {
+
+		if (Colmeia[0][0] != null) {
+			Date MaisAntigo = Colmeia[0][0].getDataDeFabricacao();
+
+			for (int i = 0; i < 20; i++) {
+				for (int j = 0; j < 10; j++) {
+					if (Colmeia[i][j] != null) {
+						if (Colmeia[i][j].getDataDeFabricacao().before(Colmeia[0][0].getDataDeFabricacao())) {
+							MaisAntigo = Colmeia[i][j].getDataDeFabricacao();
+							
+						}
+					}
+				}
+
+			}
+			SimpleDateFormat strDf = new SimpleDateFormat("dd/MM/yyyy");
+			System.out.println("Data do vinho mais antigo: " + strDf.format(MaisAntigo));
+
+		} else {
+			System.out.println("Sua Adega está Vazia!");
+		}
+
+	}
+
+	public void ObterVinho(int CoordLinha, int CoordColuna) {
+		if (Colmeia[CoordLinha][CoordColuna] == null) {
+			System.out.println("Não existe nenhum vinho nesta coordenada!");
+		} else {
+			Colmeia[CoordLinha][CoordColuna].InformacoesVinho();
+		}
+	}
+
+}
+
+//Classe Vinho
+
+
+package At_II_POO;
+
+import java.util.Date;
+public abstract class Vinho {
+	private String Nome;
+	private String TipoDaUva;
+	private String Fabricante;
+	private Date DataDeFabricacao;
+	private double ValorDeCompra;
+	
+	
+	public Vinho(String Nome, String TipoDaUva, String Fabricante, Date dataDeFabricacao, double ValorDeCompra){
+		this.Nome = Nome;
+		this.TipoDaUva =TipoDaUva;
+		this.Fabricante = Fabricante;
+		this.DataDeFabricacao = dataDeFabricacao;
+		this.ValorDeCompra = ValorDeCompra;
+	}
+
+
+	public String getNome() {
+		return Nome;
+	}
+
+
+	public void setNome(String nome) {
+		Nome = nome;
+	}
+
+
+	public String getTipoDaUva() {
+		return TipoDaUva;
+	}
+
+
+	public void setTipoDaUva(String tipoDaUva) {
+		TipoDaUva = tipoDaUva;
+	}
+
+
+	public String getFabricante() {
+		return Fabricante;
+	}
+
+
+	public void setFabricante(String fabricante) {
+		Fabricante = fabricante;
+	}
+
+
+	public Date getDataDeFabricacao() {
+		return DataDeFabricacao;
+	}
+
+
+	public void setDataDeFabricacao(Date dataDeFabricacao) {
+		DataDeFabricacao = dataDeFabricacao;
+	}
+
+
+	public double getValorDeCompra() {
+		return ValorDeCompra;
+	}
+
+
+	public void setValorDeCompra(double valorDeCompra) {
+		ValorDeCompra = valorDeCompra;
+	}
+	
+	public abstract double CalcularValorVenda();
+	
+	public abstract void InformacoesVinho();
+}
+
+//Classe VinhoBranco
+
+
+package At_II_POO;
+
+import java.util.Date;
+
+public class VinhoBranco extends Vinho{
+	private String Tipo;
+
+	public VinhoBranco(String Nome, String TipoDaUva, String Fabricante, Date DataDeFabricacao,
+			double ValorDeCompra, String Tipo){
+		super(Nome, TipoDaUva, Fabricante, DataDeFabricacao, ValorDeCompra);
+		this.Tipo = Tipo;
+	}
+
+	
+	
+	public String getTipo() {
+		return Tipo;
+	}
+
+
+
+	public void setTipo(String tipo) {
+		Tipo = tipo;
+	}
+
+
+
+	public double CalcularValorVenda(){
+		if (this.Tipo.equals("frisante")){
+			return getValorDeCompra() + ((15d/100d)*getValorDeCompra());
+		}else {
+			return getValorDeCompra();
+		}
+	}
+	
+	public void InformacoesVinho() {
+		System.out.println();
+		System.out.println("----- INFORMAÇÕES GERAIS DO VINHO MAIS ANTIGO ------");
+		System.out.println("Nome: " + getNome());
+		System.out.println("Tipo da Uva: " + getTipoDaUva());
+		System.out.println("Fabricante: " + getFabricante());
+		System.out.println("Valor de Compra: " + getValorDeCompra());
+		System.out.println("Tipo: " + getTipo());
+		System.out.println("----------------------------------------------------");
+		System.out.println();
+	}
+}
+
+
+//Classe VinhoTinto
+
+
+package At_II_POO;
+
+import java.util.Date;
+
+public class VinhoTinto extends Vinho{
+	private int Safra;
+	
+	
+	
+	public VinhoTinto(String Nome, String TipoDaUva, String Fabricante, Date DataDeFabricacao, double ValorDeCompra, int Safra) {
+		super(Nome, TipoDaUva, Fabricante, DataDeFabricacao, ValorDeCompra);
+		this.Safra = Safra;
+	}
+
+	
+	
+	public int getSafra() {
+		return Safra;
+	}
+
+
+
+	public void setSafra(int safra) {
+		Safra = safra;
+	}
+
+
+
+	public double CalcularValorVenda(){
+		if (this.Safra <= 2009) {
+			return getValorDeCompra()+((22d/100d)*getValorDeCompra());
+		}else {
+			return getValorDeCompra();
+		}
+	}
+
+	
+	public void InformacoesVinho() {
+		System.out.println();
+		System.out.println("----- INFORMAÇÕES GERAIS DO VINHO MAIS ANTIGO ------");
+		System.out.println("Nome: " + getNome());
+		System.out.println("Tipo da Uva: " + getTipoDaUva());
+		System.out.println("Fabricante: " + getFabricante());
+		System.out.println("Valor de Compra: " + getValorDeCompra());
+		System.out.println("Safra: " + getSafra());
+		System.out.println("----------------------------------------------------");
+		System.out.println();
+	}
+}
+
+
+
